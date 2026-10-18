@@ -551,7 +551,6 @@ function pop(n){const c=document.createElement('canvas');c.style.cssText='positi
   if(++f<110)requestAnimationFrame(step);else c.remove()})()}
 const burst=()=>{tone(880,.4);pop(reduce?40:140)};
 $('#clickme').onclick=e=>{e.stopPropagation();burst()};
-$('#pip').addEventListener('click',e=>{if(e.target.closest('#star'))return;burst()});
 /* storybook: Pip and the Quiet Night */
 const dots=a=>a.map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff3c4"/>`).join('');
 const SKY='<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1630"/><stop offset="1" stop-color="#4a3a7a"/></linearGradient><mask id="mm"><rect width="400" height="260" fill="#fff"/><circle cx="342" cy="48" r="22" fill="#000"/></mask></defs><rect width="400" height="260" fill="url(#sk)"/>';
