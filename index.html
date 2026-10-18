@@ -222,6 +222,24 @@ body.chaos-mode marquee{background:#b8ff2c;color:#32112d;padding:.2rem}
 @media(max-width:620px){body.chaos-mode .card,body.chaos-mode .nb,body.chaos-mode .wish-card{box-shadow:4px 4px 0 #b8ff2c,7px 7px 0 #8cecff;animation-duration:6s}body.chaos-mode .pip-wrap{animation-duration:5s}}
 @media(prefers-reduced-motion:reduce){body.chaos-mode h1,body.chaos-mode h2,body.chaos-mode h3,body.chaos-mode .card,body.chaos-mode .nb,body.chaos-mode .wish-card,body.chaos-mode .pip-wrap,body.chaos-mode .lamp{animation:none!important}.chaos-pop{display:none!important}}
 
+
+/* Send a Dream — customizable shareable card */
+.dream-maker{margin:1.5rem auto;max-width:62rem;padding:clamp(1rem,3vw,1.5rem);border:2px solid var(--accent);border-radius:1.4rem;background:var(--card);box-shadow:0 8px 24px rgba(92,64,51,.08)}
+.dream-maker h3{margin:.1rem 0 .35rem}.dream-maker-intro{margin:.25rem 0 1rem;max-width:48rem}
+.dream-maker-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.9fr);gap:1.25rem;align-items:start}
+.dream-controls label{display:block;font-weight:600;margin:.65rem 0 .25rem}.dream-controls input,.dream-controls textarea,.dream-controls select{width:100%;max-width:100%;box-sizing:border-box;border:1.5px solid var(--accent);border-radius:.7rem;padding:.7rem .8rem;background:var(--bg);color:var(--ink);font:inherit}
+.dream-controls textarea{min-height:6rem;resize:vertical}.dream-themes{display:flex;flex-wrap:wrap;gap:.45rem;margin:.35rem 0 .5rem}.dream-theme{display:inline-flex;align-items:center;gap:.35rem}.dream-theme::before{content:"";width:.8rem;height:.8rem;border-radius:50%;background:var(--swatch);border:1px solid #0002}
+.dream-preview-wrap{min-width:0}.dream-preview-label{font-weight:600;margin:0 0 .45rem}.dream-canvas{display:block;width:100%;height:auto;border-radius:1rem;box-shadow:0 8px 24px rgba(20,12,40,.18);background:#20183b}
+.dream-actions{display:flex;flex-wrap:wrap;gap:.55rem;margin-top:.85rem}.dream-actions button{flex:1 1 120px}.dream-status{min-height:1.4em;margin:.65rem 0 0;font-size:.9rem;color:var(--accent)}
+@media(max-width:680px){.dream-maker-grid{grid-template-columns:1fr}.dream-preview-wrap{max-width:420px;margin-inline:auto;width:100%}}
+@media(prefers-reduced-motion:reduce){.dream-canvas{scroll-behavior:auto}}
+
+.tonight{max-width:62rem;margin:0 auto 1rem;padding:0 1.25rem;font-weight:600}
+.tn-track{height:.8rem;border:2px solid var(--accent);border-radius:99px;background:var(--sky);overflow:hidden;margin:.35rem 0}
+.tn-fill{height:100%;width:0;background:var(--accent);transition:width .6s}
+.tonight small{display:block;font-weight:400;opacity:.8}
+@media(prefers-reduced-motion:reduce){.tn-fill{transition:none}}
+.wall-count{margin:.6rem 0 .2rem;font-size:.9rem;font-weight:600;color:var(--accent)}
 </style>
 </head>
 <body>
@@ -326,6 +344,37 @@ body.chaos-mode marquee{background:#b8ff2c;color:#32112d;padding:.2rem}
 
 <section id="guestbook"><span class="doodle" aria-hidden="true" style="left:12%;bottom:.5rem;--rot:-2deg">shh. Pip loves you. 💀💛</span>
  <div class="dreams-counter">Dreams delivered: <span class="digits" id="dreamDigits" aria-live="polite"></span></div>
+ <div class="tonight"><span id="tonightText" aria-live="polite"></span><div class="tn-track" role="progressbar" aria-label="Dreams delivered tonight" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0"><div class="tn-fill" id="tonightFill"></div></div><small>Deliver all 12 tonight: light the 3 nightlights, say hi to the 3 neighbors, play the lullaby, win the block tower, finish the story, tuck Pip in, send a dream card, and sign the wall.</small></div>
+ <article class="dream-maker" id="sendDream">
+  <h3>💌 Send a Dream</h3>
+  <p class="dream-maker-intro">Turn a little wish into a dreamy postcard. Pick a vibe, make it yours, then download the card or share a link with someone.</p>
+  <div class="dream-maker-grid">
+   <form class="dream-controls" id="dreamCardForm">
+    <label for="dreamCardName">From</label>
+    <input id="dreamCardName" maxlength="32" placeholder="A friend of Pip" autocomplete="nickname">
+    <label for="dreamCardWish">Your dream message</label>
+    <textarea id="dreamCardWish" maxlength="180" required placeholder="I hope something lovely finds you today…"></textarea>
+    <label for="dreamCardTheme">Choose a card vibe</label>
+    <select id="dreamCardTheme">
+     <option value="moon">🌙 Moonlight lavender</option>
+     <option value="rose">🌷 Sleepy rose</option>
+     <option value="cosmos">✨ Cosmic midnight</option>
+    </select>
+    <label for="dreamCardStars">Extra stars: <span id="dreamStarCount">12</span></label>
+    <input id="dreamCardStars" type="range" min="4" max="28" value="12">
+    <div class="dream-actions">
+     <button type="button" id="downloadDream">⬇ Download PNG</button>
+     <button type="button" id="shareDream">🔗 Share dream</button>
+    </div>
+    <p class="dream-status" id="dreamCardStatus" role="status" aria-live="polite">Your card updates as you type.</p>
+   </form>
+   <div class="dream-preview-wrap">
+    <p class="dream-preview-label">Your postcard preview</p>
+    <canvas class="dream-canvas" id="dreamCanvas" width="900" height="1120" aria-label="Preview of your custom dream postcard"></canvas>
+   </div>
+  </div>
+ </article>
+
  <article class="card wish-card">
   <div class="wish-sticker" aria-hidden="true"><img src="data:image/png;base64,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" alt=""></div>
   <h3>Dream wishes</h3>
@@ -336,6 +385,8 @@ body.chaos-mode marquee{background:#b8ff2c;color:#32112d;padding:.2rem}
    <textarea id="wishText" name="wish" maxlength="280" placeholder="Sweet dreams…" required></textarea>
    <button type="submit">Sign the wall</button>
   </form>
+  <p class="dream-status" id="wallNote" role="status" aria-live="polite"></p>
+  <p class="wall-count" id="wallCount" aria-live="polite"></p>
   <div class="wish-list" id="wishList" aria-live="polite"></div>
  </article>
 </section>
@@ -539,18 +590,46 @@ bookUI();
 /* Dream wishes guestbook */
 const DIGITS = $('#dreamDigits');
 const WISH_KEY = 'pip_wishes';
-const COUNT_KEY = 'pip_dream_count';
+const COUNT_KEY = 'pip_dreams_delivered';
 const DEFAULT_WISHES = [{name:'Pip', text:'Hi! Thanks for visiting my first website!'}];
+/* PUBLIC WALL: paste your Supabase Project URL and anon public key here (see supabase_setup.sql).
+   Left empty, the wall stays private to each visitor's own device. */
+const WALL = {url:'https://njidkpwkkqwwzxcoolzx.supabase.co', key:'sb_publishable_iCrDMBHjmKvwFlKsbcPwEQ_98vgs_BH'};
+const publicWall = !!(WALL.url && WALL.key);
+let remoteWishes = null, remoteTotal = 0;
+const WALL_SIZE = 10; /* the wall holds 10 wishes, then the next wish starts a fresh wall */
+const wallVisible = n => n<=0 ? 0 : (n % WALL_SIZE || WALL_SIZE);
+const wallBase = WALL.url.replace(/\/$/,'') + '/rest/v1/wishes';
+/* old-style anon keys (start with eyJ) also go in Authorization; new publishable keys (sb_publishable_...) only go in apikey */
+const wallHeaders = {apikey:WALL.key, 'Content-Type':'application/json', ...(WALL.key.startsWith('eyJ') ? {Authorization:'Bearer '+WALL.key} : {})};
+async function fetchWall(){
+  if(!publicWall) return;
+  try{
+    const r = await fetch(wallBase+'?select=name,text&order=created_at.desc&limit='+WALL_SIZE, {headers:{...wallHeaders, Prefer:'count=exact'}});
+    if(!r.ok) throw new Error(r.status);
+    const rows = await r.json();
+    const m = /\/(\d+)$/.exec(r.headers.get('content-range')||'');
+    remoteTotal = m ? parseInt(m[1],10) : rows.length;
+    remoteWishes = rows;
+    renderWishes();
+  }catch{}
+}
+async function postWall(name,text){
+  const r = await fetch(wallBase, {method:'POST', headers:{...wallHeaders, Prefer:'return=minimal'}, body:JSON.stringify({name,text})});
+  if(!r.ok) throw new Error(r.status);
+}
+const wallNote = msg => { $('#wallNote').textContent = msg; };
 function loadWishes(){
   try{
     const raw = st.g(WISH_KEY);
-    return raw ? JSON.parse(raw) : DEFAULT_WISHES.slice();
-  }catch{return DEFAULT_WISHES.slice()}
+    const d = DEFAULT_WISHES[0];
+    return (raw ? JSON.parse(raw) : []).filter(w => !(w.name===d.name && w.text===d.text));
+  }catch{return []}
 }
 function saveWishes(list){st.s(WISH_KEY, JSON.stringify(list))}
 function getCount(){
   const n = parseInt(st.g(COUNT_KEY),10);
-  return Number.isFinite(n) && n >= 0 ? n : 1216;
+  return Number.isFinite(n) && n >= 0 ? n : 0;
 }
 function setCount(n){st.s(COUNT_KEY, String(n))}
 function paintDigits(n){
@@ -558,7 +637,11 @@ function paintDigits(n){
   DIGITS.innerHTML = [...s].map(d=>`<span>${d}</span>`).join('');
 }
 function renderWishes(){
-  const list = loadWishes();
+  let mine, n;
+  if(publicWall && remoteWishes){ n = wallVisible(remoteTotal); mine = remoteWishes.slice(0,n); }
+  else { mine = loadWishes().slice(0,WALL_SIZE); n = mine.length; }
+  const list = mine.concat(DEFAULT_WISHES);
+  $('#wallCount').textContent = n>=WALL_SIZE ? 'The wall is full! The next wish starts a fresh wall ✨' : n+' / '+WALL_SIZE+' wishes on the wall';
   const el = $('#wishList');
   el.innerHTML = list.map(w=>`<div class="wish-item"><b>${escapeHtml(w.name||'Anon')}:</b> ${escapeHtml(w.text)}</div>`).join('');
 }
@@ -567,24 +650,73 @@ function escapeHtml(s){
 }
 paintDigits(getCount());
 renderWishes();
+fetchWall();
+if(publicWall) setInterval(()=>{ if(!document.hidden) fetchWall(); }, 20000);
 $('#wishForm').addEventListener('submit', e=>{
   e.preventDefault();
   const name = ($('#wishName').value || 'Anon').trim().slice(0,40) || 'Anon';
   const text = ($('#wishText').value || '').trim().slice(0,280);
   if(!text) return;
-  const list = loadWishes();
-  list.unshift({name, text});
-  if(list.length > 40) list.length = 40;
-  saveWishes(list);
-  const c = getCount() + 1;
-  setCount(c);
-  paintDigits(c);
+  if(publicWall){
+    const last = parseInt(st.g('pip_wall_last'),10) || 0;
+    if(Date.now()-last < 15000){ wallNote('Give Pip a moment: one wish every 15 seconds ✨'); return; }
+    st.s('pip_wall_last', String(Date.now()));
+    remoteTotal += 1;
+    remoteWishes = [{name,text}].concat(remoteWishes || []).slice(0,WALL_SIZE);
+    postWall(name,text).then(()=>{wallNote('Your wish is on the public wall! 💌'); fetchWall();})
+      .catch(()=>{wallNote("Couldn't reach the public wall, so your wish is saved on this device for now."); const l=loadWishes(); saveWishes(l.length>=WALL_SIZE ? [{name,text}] : [{name,text}].concat(l));});
+  }else{
+    const list = loadWishes();
+    saveWishes(list.length >= WALL_SIZE ? [{name, text}] : [{name, text}].concat(list));
+  }
+  deliver('wish',true);
   renderWishes();
   $('#wishText').value = '';
   tone(880,.35);
   if(window.confetti && !reduce) confetti({particleCount:70, spread:70, origin:{y:.65}, colors:['#a34063','#f2a93b','#ff9ec0']});
 });
 
+
+/* Dreams delivered: the big number goes up by 1 for each dream delivered.
+   Wall signatures and dream cards always count (every send). The other deeds count once per night.
+   Tonight's bar tracks the 12 different deeds; finishing all 12 is the nightly goal. */
+const DEEDS=['lamp1','lamp2','lamp3','nb1','nb2','nb3','lullaby','tower','story','tuck','card','wish'];
+const TONIGHT_KEY='pip_tonight';
+const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+let tonightDay=todayStr(),tonight=[];
+try{const o=JSON.parse(st.g(TONIGHT_KEY));if(o&&o.d===tonightDay&&Array.isArray(o.k))tonight=o.k.filter(k=>DEEDS.includes(k))}catch{}
+function paintTonight(){
+  const n=tonight.length,t=DEEDS.length;
+  $('#tonightText').textContent=n>=t?'Tonight: all '+t+' dreams delivered! Sweet dreams ✨':'Tonight: '+n+' / '+t+' dreams delivered';
+  $('#tonightFill').style.width=(n/t*100)+'%';
+  $('#tonightFill').parentElement.setAttribute('aria-valuenow',n);
+}
+function deliver(key,repeat){
+  if(todayStr()!==tonightDay){tonightDay=todayStr();tonight=[]}
+  if(!DEEDS.includes(key))return;
+  const fresh=!tonight.includes(key);
+  if(fresh){tonight.push(key);st.s(TONIGHT_KEY,JSON.stringify({d:tonightDay,k:tonight}))}
+  if(fresh||repeat){const c=getCount()+1;setCount(c);paintDigits(c)}
+  paintTonight();
+  if(fresh&&tonight.length===DEEDS.length){
+    tone(880,.35);
+    if(window.confetti&&!reduce)confetti({particleCount:140,spread:100,origin:{y:.6},colors:['#a34063','#f2a93b','#ff9ec0']});
+  }
+}
+paintTonight();
+document.addEventListener('click',e=>{
+  const lamp=e.target.closest('.lamp');
+  if(lamp&&lamp.classList.contains('on')){const i=[...document.querySelectorAll('#lamps .lamp')].indexOf(lamp);if(i>-1&&i<3)deliver('lamp'+(i+1))}
+  const nb=e.target.closest('.nb');
+  if(nb){const i=[...document.querySelectorAll('.nb')].indexOf(nb);if(i>-1&&i<3)deliver('nb'+(i+1))}
+  if(e.target.closest('#play')&&!muted)deliver('lullaby');
+});
+const watchEl=(sel,opts,fn)=>{const el=$(sel);if(el)new MutationObserver(fn).observe(el,opts)};
+const txtOpts={childList:true,characterData:true,subtree:true};
+watchEl('#tstat',txtOpts,()=>{if(/win/i.test($('#tstat').textContent))deliver('tower')});
+watchEl('#bkCount',txtOpts,()=>{const m=/(\d+)\s+of\s+(\d+)/.exec($('#bkCount').textContent);if(m&&m[1]===m[2])deliver('story')});
+watchEl('#tuck',{attributes:true,attributeFilter:['aria-pressed']},()=>{if($('#tuck').getAttribute('aria-pressed')==='true')deliver('tuck')});
+watchEl('#dreamCardStatus',txtOpts,()=>{if(/downloaded|copied|ready to copy/i.test($('#dreamCardStatus').textContent))deliver('card',true)});
 
 /* Tuck Pip in: lamps off at night puts Pip to bed; idle visitors get a yawn and a doze */
 {
@@ -822,6 +954,67 @@ body.flash-on .cursor-trail-bit,body.flash-on .spark,body.flash-on .chaos-pop{vi
    makeBit(true);makeBit(false);
    if(document.body.classList.contains('chaos-mode')){makeBit(false);makeBit(true);if(Math.random()<.65)makeBit(false)}
  },{passive:true});
+})();
+</script>
+
+
+<script>
+(()=>{
+ const form=document.getElementById('dreamCardForm');
+ if(!form)return;
+ const nameInput=document.getElementById('dreamCardName');
+ const wishInput=document.getElementById('dreamCardWish');
+ const themeInput=document.getElementById('dreamCardTheme');
+ const starsInput=document.getElementById('dreamCardStars');
+ const starCount=document.getElementById('dreamStarCount');
+ const canvas=document.getElementById('dreamCanvas');
+ const ctx=canvas.getContext('2d');
+ const status=document.getElementById('dreamCardStatus');
+ const themes={
+  moon:{bg1:'#17142f',bg2:'#66558f',accent:'#f8d9a0',ink:'#fff8f1',soft:'#dcd2ff',name:'MOONLIGHT WISH'},
+  rose:{bg1:'#542b50',bg2:'#c9799c',accent:'#ffe3a7',ink:'#fff8f5',soft:'#ffd5e5',name:'A LITTLE ROSE DREAM'},
+  cosmos:{bg1:'#071d3b',bg2:'#3c6a91',accent:'#c6fffb',ink:'#f4fbff',soft:'#a9d9ff',name:'COSMIC POSTCARD'}
+ };
+ const rounded=(c,x,y,w,h,r)=>{c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()};
+ function draw(){
+  const W=canvas.width,H=canvas.height,t=themes[themeInput.value]||themes.moon;
+  const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,t.bg1);g.addColorStop(1,t.bg2);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  // Soft glowing moon
+  const glow=ctx.createRadialGradient(700,180,10,700,180,220);glow.addColorStop(0,t.accent+'66');glow.addColorStop(1,t.accent+'00');ctx.fillStyle=glow;ctx.fillRect(470,0,430,400);
+  ctx.fillStyle=t.accent;ctx.beginPath();ctx.arc(700,170,68,0,Math.PI*2);ctx.fill();ctx.fillStyle=t.bg1;ctx.beginPath();ctx.arc(727,146,65,0,Math.PI*2);ctx.fill();
+  // Stars use a stable layout so preview doesn't flicker on every keystroke
+  const count=Number(starsInput.value);starCount.textContent=count;
+  for(let i=0;i<count;i++){const x=35+((i*137+53)%830),y=40+((i*211+79)%990),r=2+(i%4)*1.6;ctx.globalAlpha=.55+(i%4)*.12;ctx.fillStyle=i%3===0?t.accent:t.ink;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill();if(i%5===0){ctx.strokeStyle=t.soft;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-8,y);ctx.lineTo(x+8,y);ctx.moveTo(x,y-8);ctx.lineTo(x,y+8);ctx.stroke()}}
+  ctx.globalAlpha=1;
+  // Postcard frame
+  rounded(ctx,48,48,804,1024,34);ctx.strokeStyle=t.soft+'aa';ctx.lineWidth=3;ctx.stroke();
+  ctx.textAlign='center';ctx.fillStyle=t.accent;ctx.font='700 25px sans-serif';ctx.letterSpacing='5px';ctx.fillText(t.name,W/2,290);ctx.letterSpacing='0px';
+  ctx.fillStyle=t.ink;ctx.font='700 64px sans-serif';ctx.fillText('For you, ✦',W/2,380);
+  // Wrap message safely
+  const msg=(wishInput.value.trim()||'May a little magic find you tonight.').replace(/\s+/g,' ');
+  const words=msg.split(' '),lines=[];let line='';ctx.font='36px sans-serif';
+  for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>680&&line){lines.push(line);line=word}else line=test}if(line)lines.push(line);
+  const shown=lines.slice(0,5);let y=500;ctx.fillStyle=t.ink;ctx.font='36px sans-serif';
+  shown.forEach(l=>{ctx.fillText(l,W/2,y);y+=54});if(lines.length>5){ctx.font='28px sans-serif';ctx.fillText('…',W/2,y)}
+  // Cute sleepy ghost
+  ctx.fillStyle=t.soft;ctx.beginPath();ctx.arc(W/2,790,62,Math.PI,0);ctx.lineTo(W/2+62,850);ctx.quadraticCurveTo(W/2+45,832,W/2+30,850);ctx.quadraticCurveTo(W/2+15,867,W/2,850);ctx.quadraticCurveTo(W/2-15,867,W/2-30,850);ctx.quadraticCurveTo(W/2-45,832,W/2-62,850);ctx.closePath();ctx.fill();
+  ctx.fillStyle=t.bg1;ctx.beginPath();ctx.ellipse(W/2-21,790,7,12,0,0,Math.PI*2);ctx.ellipse(W/2+21,790,7,12,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(W/2,813,10,0,Math.PI);ctx.strokeStyle=t.bg1;ctx.lineWidth=4;ctx.stroke();
+  ctx.fillStyle=t.accent;ctx.font='italic 30px sans-serif';ctx.fillText('sent with a little stardust ✨',W/2,940);
+  const from=nameInput.value.trim();ctx.fillStyle=t.ink;ctx.font='28px sans-serif';ctx.fillText(from?'— '+from:'— a friend of Pip',W/2,1000);
+ }
+ function getData(){return {from:nameInput.value.trim().slice(0,32),wish:wishInput.value.trim().slice(0,180),theme:themeInput.value,stars:Number(starsInput.value)}}
+ function valid(){if(!wishInput.value.trim()){status.textContent='Add a little dream message first ✨';wishInput.focus();return false}return true}
+ [nameInput,wishInput,themeInput,starsInput].forEach(el=>el.addEventListener('input',draw));
+ form.addEventListener('submit',e=>e.preventDefault());
+ document.getElementById('downloadDream').addEventListener('click',()=>{if(!valid())return;const a=document.createElement('a');a.download='pip-dream-card.png';a.href=canvas.toDataURL('image/png');a.click();status.textContent='Your dream card was downloaded as a PNG. 💌'});
+ document.getElementById('shareDream').addEventListener('click',async()=>{
+  if(!valid())return;const data=getData();const url=new URL(location.href);url.hash='dreamcard='+encodeURIComponent(JSON.stringify(data));
+  try{await navigator.clipboard.writeText(url.href);status.textContent='Dream link copied! Send it to a friend. 💫'}
+  catch{try{window.prompt('Copy this dream link and send it to a friend:',url.href);status.textContent='Your share link is ready to copy. 💫'}catch{status.textContent='Could not copy automatically. Try copying the page URL after creating your card.'}}
+ });
+ // Restore a shared postcard when someone opens a dream link
+ function loadShared(){if(!location.hash.startsWith('#dreamcard='))return;try{const d=JSON.parse(decodeURIComponent(location.hash.slice(11)));nameInput.value=String(d.from||'').slice(0,32);wishInput.value=String(d.wish||'').slice(0,180);if(themes[d.theme])themeInput.value=d.theme;starsInput.value=Math.min(28,Math.max(4,Number(d.stars)||12));draw();status.textContent='A friend sent you this dream. You can remix it or download your own card! 💌';document.getElementById('sendDream').scrollIntoView({behavior:'smooth',block:'start'})}catch{}}
+ loadShared();draw();
 })();
 </script>
 
